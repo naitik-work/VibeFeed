@@ -1,0 +1,203 @@
+.vibe-right-panel {
+  width: 320px;
+  padding: 1.5rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  flex-shrink: 0;
+
+  &__search {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    input {
+      width: 100%;
+      height: 42px;
+      border-radius: var(--radius-full);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      padding: 0 1rem 0 2.5rem;
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      outline: none;
+      transition: all var(--transition-fast);
+
+      &::placeholder {
+        color: var(--text-muted);
+      }
+
+      &:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px var(--color-primary-subtle);
+        background-color: var(--bg-surface-elevated);
+      }
+    }
+
+    &-icon {
+      position: absolute;
+      left: 1rem;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+  }
+
+  &__card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  &__card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  &__title-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__icon-accent {
+    color: var(--color-primary);
+  }
+
+  &__see-all {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__creators {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+  }
+
+  .vibe-creator-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    &__details {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-width: 0;
+    }
+
+    &__name {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &__followers {
+      font-size: 0.6875rem;
+      color: var(--text-muted);
+    }
+
+    &__follow-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      background-color: var(--bg-surface-elevated);
+      border: 1px solid var(--border-medium);
+      color: var(--text-primary);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.3125rem 0.75rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+
+      &:hover {
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+      }
+
+      &.is-following {
+        background-color: var(--color-primary-subtle);
+        border-color: transparent;
+        color: var(--color-primary);
+      }
+    }
+  }
+
+  &__tags {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .vibe-tag-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-decoration: none;
+    padding: 0.375rem 0.5rem;
+    border-radius: var(--radius-xs);
+    transition: background-color var(--transition-fast);
+
+    &:hover {
+      background-color: var(--bg-surface-elevated);
+
+      .vibe-tag-item__label {
+        color: var(--color-primary);
+      }
+    }
+
+    &__label {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: color var(--transition-fast);
+    }
+
+    &__count {
+      font-size: 0.6875rem;
+      color: var(--text-muted);
+    }
+  }
+
+  &__footer {
+    padding: 0 0.5rem;
+  }
+
+  &__copyright {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+}
+
+/* Hide on tablet and mobile */
+@media (max-width: 1140px) {
+  .vibe-right-panel {
+    display: none;
+  }
+}

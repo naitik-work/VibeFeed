@@ -11,7 +11,7 @@ async function identifyUser(req, res, next) {
 
   let decoded = null;
   try {
-    decoded = jwt.verify(token, process.env.JWT_SECRET);
+    decoded = jwt.verify(token, process.env.JWT_SECRET || "vibefeed_default_secret_key_2026");
   } catch (err) {
     return res.status(401).json({
       message: "User not authorized.",

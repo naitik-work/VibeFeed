@@ -1,114 +1,157 @@
-const postModel= require('../models/post.model');
-const likeModel= require('../models/like.model')
-const ImageKit= require("@imageKit/nodejs");
-const {toFile}= require("@imageKit/nodejs");
-const { Folders } = require('@imageKit/nodejs/resources/index.js');
-const jwt= require("jsonwebtoken");
+const postModel = require("../models/post.model");
+const likeModel = require("../models/like.model");
+const ImageKit = require("@imageKit/nodejs");
+const { toFile } = require("@imageKit/nodejs");
 
-
-const imageKit= new ImageKit({
-    privateKey: process.env.IMAGEKIT_PRIVATE_KEY
-})
-
-async function createPostController(req,res){
-    
-    const file= await imageKit.files.upload({
-        file: await toFile(Buffer.from(req.file.buffer), 'file'),
-        fileName: "Test",
-        folder: "cohort-2-insta-clone"
-    })
-    // res.send(file);
-
-    const post= await postModel.create({
-        caption: req.body.caption,
-        imgUrl: file.url,
-        user: req.user.id
-    })
-
-    res.status(201).json({
-        message:"new post created succesfully.",
-        post
-    })
-}
-
-async function getPostController(req,res){
-
-
-     const userId= req.user.id;
-      
-     const posts= await postModel.find(
-        {user: userId}
-     )
-
-     res.status(200).json({
-        "message": "Posts fetched successfully.",
-         posts
-     })
-}
-
-async function getPostDetailsController(req,res){
-
-    const userId= req.user.id;
-    const postId= req.params.postId;
-
-    const post= await postModel.findById(postId);
-
-    if(!post){
-        res.status(404).json({
-            message: "Post not found."
-        })
+let imageKit = null;
+function getImageKit() {
+    if (!imageKit) {
+        const privateKey = process.env.IMAGEKIT_PRIVATE_KEY;
+        if (!privateKey) {
+            throw new Error("IMAGEKIT_PRIVATE_KEY is missing or empty in .env. Please provide a valid ImageKit private key.");
+        }
+        imageKit = new ImageKit({ privateKey });
     }
+    return imageKit;
+}
 
-    const isValidUser = (post.user.toString()===userId);
+async function createPostController(req, res) {
+    try {
+        if (!req.file) {
+            return res.status(400).json({
+                message: "Image file is required."
+            });
+        }
 
-    if (!isValidUser) {
-        return res.status(403).json({
-            message: "Forbidden Content."
-        })
+        const ik = getImageKit();
+        const file = await ik.files.upload({
+            file: await toFile(Buffer.from(req.file.buffer), "file"),
+            fileName: req.file.originalname || "Vibe_" + Date.now(),
+            folder: "cohort-2-insta-clone"
+        });
+
+        const post = await postModel.create({
+            caption: req.body.caption || "",
+            imgUrl: file.url,
+            user: req.user.id
+        });
+
+        return res.status(201).json({
+            message: "new post created succesfully.",
+            post
+        });
+    } catch (error) {
+        console.error("Create post error:", error.message);
+        return res.status(500).json({
+            message: error.message || "Failed to create post."
+        });
     }
-
-    return res.status(200).json({
-    message: "Post fetched  successfully.",
-    post
-    })
-
 }
 
-async function likePostController(req,res){
-    const username= req.user.username;
-    const postId= req.params.postId;
+async function getPostController(req, res) {
+    try {
+        const userId = req.user.id;
+        const posts = await postModel.find({ user: userId });
 
-    const post= await postModel.findById(postId);
-
-    if(!post){
-        return res.status(404).json({
-            message: "Post not found."
-        })
+        return res.status(200).json({
+            message: "Posts fetched successfully.",
+            posts
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || "Failed to fetch posts."
+        });
     }
-
-    const like= await likeModel.create({
-        post: postId,
-        user: username
-    })
-    res.status(200).json({
-        message: "Post liked successfully.",
-        like
-    })
-
 }
 
-async function getFeedController(req,res){
-     const posts= await postModel.find().populate("user").select(); //populate tab lagate hai jab current model ke andar kisi aur model ka reference ho aur hume uska data bhi chahiye hota hai. Yaha pe post model ke andar user ka reference hai, to hum populate tab lagayenge taki hume user ka data bhi mil jaye.
+async function getPostDetailsController(req, res) {
+    try {
+        const userId = req.user.id;
+        const postId = req.params.postId;
 
-     res.status(200).json({
-        "message": "Posts fetched successfully.",
-         posts
-     })
+        const post = await postModel.findById(postId);
+
+        if (!post) {
+            return res.status(404).json({
+                message: "Post not found."
+            });
+        }
+
+        const isValidUser = post.user.toString() === userId;
+        if (!isValidUser) {
+            return res.status(403).json({
+                message: "Forbidden Content."
+            });
+        }
+
+        return res.status(200).json({
+            message: "Post fetched successfully.",
+            post
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || "Failed to fetch post details."
+        });
+    }
 }
-module.exports = {      
+
+async function likePostController(req, res) {
+    try {
+        const username = req.user.username;
+        const postId = req.params.postId;
+
+        const post = await postModel.findById(postId);
+        if (!post) {
+            return res.status(404).json({
+                message: "Post not found."
+            });
+        }
+
+        // Check if already liked
+        const existingLike = await likeModel.findOne({ post: postId, user: username });
+        if (existingLike) {
+            await likeModel.findByIdAndDelete(existingLike._id);
+            return res.status(200).json({
+                message: "Post unliked successfully.",
+                liked: false
+            });
+        }
+
+        const like = await likeModel.create({
+            post: postId,
+            user: username
+        });
+
+        return res.status(200).json({
+            message: "Post liked successfully.",
+            like,
+            liked: true
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || "Failed to like post."
+        });
+    }
+}
+
+async function getFeedController(req, res) {
+    try {
+        const posts = await postModel.find().populate("user").sort({ _id: -1 });
+        return res.status(200).json({
+            message: "Posts fetched successfully.",
+            posts
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || "Failed to fetch feed."
+        });
+    }
+}
+
+module.exports = {
     createPostController,
     getPostController,
     getPostDetailsController,
     likePostController,
     getFeedController
-}
+};

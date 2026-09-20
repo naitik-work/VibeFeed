@@ -1,19 +1,32 @@
-import { createContext,useState } from "react";
+import { createContext, useState } from "react";
 
-const PostContext = createContext();
+export const PostContext = createContext();
 
 export const PostContextProvider = ({ children }) => {
+  const [loading, setLoading] = useState(false);
+  const [feed, setFeed] = useState([]);
+  const [userPosts, setUserPosts] = useState([]);
+  const [activePost, setActivePost] = useState(null);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-    const [Loading,setLoading] = useState(false);
-    const [Post,setPost] = useState(null);
-    const [Feed,setFeed] = useState(null);
+  return (
+    <PostContext.Provider
+      value={{
+        loading,
+        setLoading,
+        feed,
+        setFeed,
+        userPosts,
+        setUserPosts,
+        activePost,
+        setActivePost,
+        isCreateOpen,
+        setIsCreateOpen,
+      }}
+    >
+      {children}
+    </PostContext.Provider>
+  );
+};
 
-
-    return (
-        <PostContext.Provider value={{Loading,setLoading,Post,setPost,Feed,setFeed}}>
-            {children}
-        </PostContext.Provider>
-    )
-}
-  
-  
+export default PostContextProvider;

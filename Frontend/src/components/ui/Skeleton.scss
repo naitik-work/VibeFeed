@@ -1,0 +1,68 @@
+.vibe-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-surface-elevated) 25%,
+    var(--bg-surface-hover) 37%,
+    var(--bg-surface-elevated) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-xs);
+
+  &--text {
+    height: 14px;
+    margin-bottom: 6px;
+    border-radius: var(--radius-xs);
+  }
+
+  &--circular {
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  &--rectangular {
+    border-radius: var(--radius-md);
+  }
+}
+
+.vibe-skeleton-post {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+
+    &-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+.vibe-skeleton-user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}

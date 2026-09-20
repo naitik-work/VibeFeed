@@ -30,13 +30,14 @@ async function registerController(req,res){
         password: hash
     })
 
-    const token= jwt.sign({
+    const token = jwt.sign(
+      {
         id: user._id,
-        username: user.username
-    },
-    process.env.JWT_SECRET,
-    {expiresIn: "1d"}
-    )
+        username: user.username,
+      },
+      process.env.JWT_SECRET || "vibefeed_default_secret_key_2026",
+      { expiresIn: "1d" }
+    );
 
     res.cookie('token', token);
     
@@ -73,13 +74,14 @@ async function loginController(req,res){
             message: "password invalid"
         })
     }
-    const token= jwt.sign({
+    const token = jwt.sign(
+      {
         id: user._id,
-        username: user.username
-    },
-        process.env.JWT_SECRET,
-        {expiresIn:'1d'}
-    )
+        username: user.username,
+      },
+      process.env.JWT_SECRET || "vibefeed_default_secret_key_2026",
+      { expiresIn: "1d" }
+    );
 
     res.cookie('token',token);
 
