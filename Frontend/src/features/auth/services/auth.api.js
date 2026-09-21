@@ -1,12 +1,7 @@
-import axios from "axios";
-
-const api = axios.create({
-  baseURL: "http://localhost:3000/api/auth",
-  withCredentials: true, // cookies/token should be included
-});
+import api from "../../../services/api";
 
 export async function login(username, password) {
-  const response = await api.post("/login", {
+  const response = await api.post("/api/auth/login", {
     username,
     password,
   });
@@ -14,7 +9,7 @@ export async function login(username, password) {
 }
 
 export async function register(username, email, password, bio, profile_image) {
-  const response = await api.post("/register", {
+  const response = await api.post("/api/auth/register", {
     username,
     email,
     password,
@@ -25,7 +20,7 @@ export async function register(username, email, password, bio, profile_image) {
 }
 
 export async function getMe() {
-  const response = await api.get("/get-me");
+  const response = await api.get("/api/auth/get-me");
   return response.data;
 }
 

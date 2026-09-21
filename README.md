@@ -1,5 +1,7 @@
 # VibeFeed
 
+Live link: https://vibefeedd.onrender.com
+
 > A modern full-stack visual social feed and creator platform built with React 19, Express 5, Node.js, and MongoDB, featuring secure JWT cookie authentication, ImageKit media storage, and an editorial design system.
 
 ---
