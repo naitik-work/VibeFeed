@@ -1,7 +1,7 @@
 const postModel = require("../models/post.model");
 const likeModel = require("../models/like.model");
-const ImageKit = require("@imageKit/nodejs");
-const { toFile } = require("@imageKit/nodejs");
+const ImageKit = require("@imagekit/nodejs");
+const { toFile } = require("@imagekit/nodejs");
 
 let imageKit = null;
 function getImageKit() {
